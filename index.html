@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Bloom</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .container {
+            position: absolute;
+            top: 5%;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+            color: white;
+            display: none;
+        }
+
+        #greeting {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        #subtext {
+            font-size: 1rem;
+        }
+
+        #startButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            background-color: #50c878;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        #startButton:hover {
+            background-color: #3cae60;
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button id="startButton">Start</button>
+    <div class="container">
+        <h1 id="greeting">Mi-am promis ca iti voi da flori la infinit. Mi-am atins scopul. Ori de cate ori faci click vei primii floarea.</h1>
+        <p id="subtext">(Inafara de negru, stiu ca verdele esmerald e culoarea ta prefarata. Motiv pentru care ai flori in culoarea asta)</p>
+    </div>
+    <canvas id="flowerCanvas"></canvas>
+
+    <!-- Background audio element -->
+    <audio id="backgroundAudio" loop>
+        <source src="Forest Sounds.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const canvas = document.getElementById("flowerCanvas");
+        const ctx = canvas.getContext("2d");
+        const startButton = document.getElementById("startButton");
+        const container = document.querySelector(".container");
+        const backgroundAudio = document.getElementById("backgroundAudio");
+
+        // Set canvas dimensions
+        function setCanvasDimensions() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Draw darker purple night background
+        function drawNightBackground() {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, "#100015");
+            gradient.addColorStop(1, "#1f002a");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw moon
+            ctx.beginPath();
+            ctx.arc(canvas.width - 100, 100, 50, 0, Math.PI * 2);
+            ctx.fillStyle = "#eae2fc";
+            ctx.fill();
+
+            // Add subtle moon glow
+            const moonGlow = ctx.createRadialGradient(canvas.width - 100, 100, 50, canvas.width - 100, 100, 150);
+            moonGlow.addColorStop(0, "rgba(255, 255, 255, 0.5)");
+            moonGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+            ctx.fillStyle = moonGlow;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Function to draw a regular flower
+        function drawFlower(x, y, color) {
+            const petals = 5;
+            const radius = 20;
+            const petalLength = 30;
+
+            for (let i = 0; i < petals; i++) {
+                const angle = (Math.PI * 2 / petals) * i;
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                ctx.ellipse(
+                    x + Math.cos(angle) * radius,
+                    y + Math.sin(angle) * radius,
+                    petalLength / 2,
+                    radius / 2,
+                    angle,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+            }
+
+            // Center of the flower
+            ctx.beginPath();
+            ctx.fillStyle = "#2b2b73";
+            ctx.arc(x, y, radius / 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Function to draw a bouquet with mixed flowers
+        function drawBouquet(x, y) {
+            const colors = [
+                "#4f83cc", // Blue
+                "#7daed3", // Light Blue
+                "#a1c1e0", // Pale Blue
+                "#50c878", // Emerald Green (higher frequency)
+                "#50c878",
+                "#50c878"
+            ];
+
+            const flowerCount = Math.floor(Math.random() * 5) * 2 + 1;
+
+            for (let i = 0; i < flowerCount; i++) {
+                const offsetX = Math.random() * 100 - 50;
+                const offsetY = Math.random() * 100 - 50;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                drawFlower(x + offsetX, y + offsetY, color);
+            }
+        }
+
+        // Event listener for canvas clicks
+        canvas.addEventListener("click", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            drawBouquet(x, y);
+        });
+
+        // Start button click handler
+        startButton.addEventListener("click", () => {
+            startButton.style.display = "none";
+            container.style.display = "block";
+            canvas.style.display = "block";
+            backgroundAudio.play();
+            setCanvasDimensions();
+            drawNightBackground();
+
+            // Redraw background on window resize
+            window.addEventListener("resize", () => {
+                setCanvasDimensions();
+                drawNightBackground();
+            });
+        });
+    </script>
+</body>
+</html>
