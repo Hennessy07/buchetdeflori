@@ -68,7 +68,6 @@
     </div>
     <canvas id="flowerCanvas"></canvas>
 
-    <!-- Background audio element -->
     <audio id="backgroundAudio" loop>
         <source src="Forest Sounds.mp3" type="audio/mp3">
         Your browser does not support the audio element.
@@ -81,13 +80,11 @@
         const container = document.querySelector(".container");
         const backgroundAudio = document.getElementById("backgroundAudio");
 
-        // Set canvas dimensions
         function setCanvasDimensions() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
 
-        // Draw darker purple night background
         function drawNightBackground() {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, "#100015");
@@ -95,13 +92,11 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw moon
             ctx.beginPath();
             ctx.arc(canvas.width - 100, 100, 50, 0, Math.PI * 2);
             ctx.fillStyle = "#eae2fc";
             ctx.fill();
 
-            // Add subtle moon glow
             const moonGlow = ctx.createRadialGradient(canvas.width - 100, 100, 50, canvas.width - 100, 100, 150);
             moonGlow.addColorStop(0, "rgba(255, 255, 255, 0.5)");
             moonGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -109,7 +104,6 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // Function to draw a regular flower
         function drawFlower(x, y, color) {
             const petals = 5;
             const radius = 20;
@@ -131,20 +125,18 @@
                 ctx.fill();
             }
 
-            // Center of the flower
             ctx.beginPath();
             ctx.fillStyle = "#2b2b73";
             ctx.arc(x, y, radius / 3, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        // Function to draw a bouquet with mixed flowers
         function drawBouquet(x, y) {
             const colors = [
-                "#4f83cc", // Blue
-                "#7daed3", // Light Blue
-                "#a1c1e0", // Pale Blue
-                "#50c878", // Emerald Green (higher frequency)
+                "#4f83cc",
+                "#7daed3",
+                "#a1c1e0",
+                "#50c878",
                 "#50c878",
                 "#50c878"
             ];
@@ -159,7 +151,6 @@
             }
         }
 
-        // Event listener for canvas clicks
         canvas.addEventListener("click", (e) => {
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -167,7 +158,6 @@
             drawBouquet(x, y);
         });
 
-        // Start button click handler
         startButton.addEventListener("click", () => {
             startButton.style.display = "none";
             container.style.display = "block";
@@ -176,7 +166,6 @@
             setCanvasDimensions();
             drawNightBackground();
 
-            // Redraw background on window resize
             window.addEventListener("resize", () => {
                 setCanvasDimensions();
                 drawNightBackground();
